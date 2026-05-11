@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpeakUp — Environmental Speaking Practice</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf8f5;
+    --bg2: #f4f0ea;
+    --surface: #ffffff;
+    --border: #e8e0d5;
+    --border2: #d6ccbf;
+    --sage: #7a9e7e;
+    --sage-light: #e8f0e9;
+    --sage-mid: #b8d0bb;
+    --sage-dark: #4a7050;
+    --text: #2d2a25;
+    --text-muted: #8a8075;
+    --text-light: #b8b0a5;
+    --amber-warn: #c8943a;
+    --red-danger: #c05050;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, #c8bfb0 1px, transparent 1px);
+    background-size: 28px 28px;
+    opacity: 0.22;
+    pointer-events: none;
+  }
+  .wrap {
+    position: relative;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 24px 100px;
+  }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 52px;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-leaf {
+    width: 32px;
+    height: 32px;
+    background: var(--sage-light);
+    border-radius: 50% 50% 50% 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+  .logo-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.35rem;
+    color: var(--text);
+  }
+  .header-pill {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--sage-dark);
+    background: var(--sage-light);
+    border: 1px solid var(--sage-mid);
+    padding: 5px 14px;
+    border-radius: 999px;
+  }
+  .hero {
+    margin-bottom: 52px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.4rem, 7vw, 3.6rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--sage);
+  }
+  .hero p {
+    font-size: 0.92rem;
+    color: var(--text-muted);
+    line-height: 1.75;
+    max-width: 460px;
+    font-weight: 300;
+  }
+  .sec-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 14px;
+  }
+  .sec-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+  .dur-section { margin-bottom: 40px; }
+  .dur-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .dur-btn {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 22px 20px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.22s ease;
+    position: relative;
+  }
+  .dur-btn:hover { border-color: var(--sage-mid); background: var(--sage-light); }
+  .dur-btn.active { border-color: var(--sage); background: var(--sage-light); }
+  .dur-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.6rem;
+    color: var(--sage-dark);
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  .dur-unit {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .dur-check {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--sage);
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .dur-btn.active .dur-check { display: flex; }
+  .dur-check::after {
+    content: '';
+    width: 8px;
+    height: 5px;
+    border-left: 1.5px solid #fff;
+    border-bottom: 1.5px solid #fff;
+    transform: rotate(-45deg) translateY(-1px);
+  }
+  .topic-section { margin-bottom: 40px; }
+  .topic-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    min-height: 110px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: border-color 0.3s, background 0.3s;
+    margin-bottom: 10px;
+  }
+  .topic-card.revealed {
+    border-color: var(--sage-mid);
+  }
+  .topic-hint {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    font-style: italic;
+    font-weight: 300;
+  }
+  .topic-pill {
+    display: none;
+    width: fit-content;
+    align-items: center;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sage-dark);
+    background: var(--sage-light);
+    border: 1px solid var(--sage-mid);
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+  }
+  .topic-q {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.25rem;
+    color: var(--text);
+    line-height: 1.45;
+    display: none;
+    animation: riseIn 0.4s ease forwards;
+  }
+  @keyframes riseIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .get-btn {
+    width: 100%;
+    background: var(--sage-dark);
+    border: none;
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    padding: 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .get-btn:hover { background: var(--sage); transform: translateY(-1px); }
+  .vocab-section { margin-bottom: 40px; display: none; animation: riseIn 0.5s ease forwards; }
+  .vocab-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+  }
+  .vocab-item {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .vocab-item:hover { border-color: var(--sage-mid); background: var(--sage-light); }
+  .vocab-word {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--sage-dark);
+    margin-bottom: 4px;
+  }
+  .vocab-def {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+    font-weight: 300;
+  }
+  .timer-section { margin-bottom: 40px; display: none; animation: riseIn 0.6s ease forwards; }
+  .timer-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 24px;
+    padding: 36px 28px 28px;
+    text-align: center;
+  }
+  .ring-wrap {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 24px;
+  }
+  .timer-svg { width: 160px; height: 160px; transform: rotate(-90deg); }
+  .timer-bg-c { fill: none; stroke: var(--bg2); stroke-width: 6; }
+  .timer-arc {
+    fill: none;
+    stroke: var(--sage);
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 440;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s linear, stroke 0.5s;
+  }
+  .ring-inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .t-time {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.6rem;
+    color: var(--text);
+    letter-spacing: -0.04em;
+    line-height: 1;
+    transition: color 0.5s;
+  }
+  .t-time.warn { color: var(--amber-warn); }
+  .t-time.danger { color: var(--red-danger); }
+  .t-sub {
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-top: 3px;
+  }
+  .timer-btns {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .tbtn {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    padding: 10px 22px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1.5px solid;
+  }
+  .tbtn.pri { background: var(--sage-dark); border-color: var(--sage-dark); color: #fff; }
+  .tbtn.pri:hover { background: var(--sage); border-color: var(--sage); }
+  .tbtn.sec { background: transparent; border-color: var(--border2); color: var(--text-muted); }
+  .tbtn.sec:hover { border-color: var(--text-muted); color: var(--text); }
+  .prog-track {
+    height: 3px;
+    background: var(--bg2);
+    border-radius: 999px;
+    margin-top: 20px;
+    overflow: hidden;
+  }
+  .prog-fill {
+    height: 100%;
+    background: var(--sage);
+    width: 0%;
+    transition: width 1s linear;
+    border-radius: 999px;
+  }
+  .done-card {
+    display: none;
+    background: var(--sage-light);
+    border: 1.5px solid var(--sage-mid);
+    border-radius: 20px;
+    padding: 28px;
+    text-align: center;
+    margin-top: 12px;
+    animation: riseIn 0.4s ease forwards;
+  }
+  .done-icon { font-size: 2rem; margin-bottom: 10px; display: block; }
+  .done-card h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    color: var(--sage-dark);
+    margin-bottom: 6px;
+  }
+  .done-card p {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    font-weight: 300;
+    line-height: 1.6;
+    margin-bottom: 18px;
+  }
+  .again-btn {
+    background: transparent;
+    border: 1.5px solid var(--sage);
+    color: var(--sage-dark);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    padding: 10px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .again-btn:hover { background: var(--sage-dark); color: #fff; border-color: var(--sage-dark); }
+  .topic-prompt {
+    display: none;
+    font-size: 0.75rem;
+    color: var(--sage-dark);
+    background: var(--sage-light);
+    border: 1px solid var(--sage-mid);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-top: 12px;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  .phrases-section { margin-bottom: 40px; display: none; animation: riseIn 0.45s ease forwards; }
+  .phrases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px;
+  }
+  .phrase-group {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+  }
+  .phrase-cat {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sage-dark);
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .phrase-item {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    padding: 4px 0;
+    line-height: 1.4;
+    font-weight: 300;
+  }
+  .phrase-item + .phrase-item { border-top: 1px solid var(--bg2); }
+  .rules-section {
+    background: var(--butter, #f5f0d8);
+    border: 1.5px solid #e0d49a;
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 40px;
+  }
+  .rules-title {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #8a7a30;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .rules-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .rules-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.82rem;
+    color: #5a5020;
+    line-height: 1.55;
+    font-weight: 400;
+  }
+  .rules-list li .rule-icon {
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-size: 0.85rem;
+  }
+  @media (max-width: 480px) { .vocab-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">
+      <div class="logo-leaf">🌿</div>
+      <span class="logo-name">SpeakUp</span>
+    </div>
+    <div class="header-pill">Environmental Focus</div>
+  </header>
+
+  <div class="hero">
+    <div class="hero-eyebrow">Speaking Practice Platform</div>
+    <h1>Talk about<br>what <em>matters.</em></h1>
+    <p>Pick a duration, get a random topic on environmental problems, review your vocab, then speak freely. The timer keeps you on track.</p>
+  </div>
+
+  <section class="rules-section">
+    <div class="rules-title">📋 Rules</div>
+    <ul class="rules-list">
+      <li><span class="rule-icon">🚫</span> You are prohibited to use any notes or books to read your speaking script.</li>
+      <li><span class="rule-icon">🧍</span> Please do your speaking practice individually.</li>
+      <li><span class="rule-icon">🔁</span> You can repeat or redo the practice as much as you want!</li>
+    </ul>
+  </section>
+
+  <section class="dur-section">
+    <div class="sec-label"><span class="sec-num">1</span> Choose your duration</div>
+    <div class="dur-grid">
+      <button class="dur-btn active" onclick="pickDur(1,this)">
+        <div class="dur-check"></div>
+        <div class="dur-num">1</div>
+        <div class="dur-unit">minute</div>
+      </button>
+      <button class="dur-btn" onclick="pickDur(2,this)">
+        <div class="dur-check"></div>
+        <div class="dur-num">2</div>
+        <div class="dur-unit">minutes</div>
+      </button>
+    </div>
+  </section>
+
+  <section class="topic-section">
+    <div class="sec-label"><span class="sec-num">2</span> Get your speaking topic</div>
+    <div class="topic-card" id="topicCard">
+      <div class="topic-hint" id="topicHint">Press the button below to reveal your topic ↓</div>
+      <div class="topic-pill" id="topicPill"></div>
+      <div class="topic-q" id="topicQ"></div>
+      <div class="topic-prompt" id="topicPrompt"></div>
+    </div>
+    <button class="get-btn" onclick="newTopic()">✦ Generate Random Topic</button>
+  </section>
+
+  <section class="phrases-section" id="phrasesSection">
+    <div class="sec-label"><span class="sec-num">✦</span> Useful phrases</div>
+    <div class="phrases-grid">
+      <div class="phrase-group">
+        <div class="phrase-cat">Giving Opinion</div>
+        <div class="phrase-item">I think / I believe…</div>
+        <div class="phrase-item">In my opinion…</div>
+        <div class="phrase-item">Personally, I feel that…</div>
+        <div class="phrase-item">From my point of view…</div>
+      </div>
+      <div class="phrase-group">
+        <div class="phrase-cat">Agreeing</div>
+        <div class="phrase-item">I totally agree because…</div>
+        <div class="phrase-item">That's a good point!</div>
+        <div class="phrase-item">I think so too.</div>
+        <div class="phrase-item">Exactly! I also think…</div>
+      </div>
+      <div class="phrase-group">
+        <div class="phrase-cat">Disagreeing</div>
+        <div class="phrase-item">I'm not sure I agree…</div>
+        <div class="phrase-item">I disagree because…</div>
+        <div class="phrase-item">Actually, I think…</div>
+        <div class="phrase-item">On the other hand…</div>
+      </div>
+      <div class="phrase-group">
+        <div class="phrase-cat">Adding Reasons</div>
+        <div class="phrase-item">The reason is…</div>
+        <div class="phrase-item">For example…</div>
+        <div class="phrase-item">Also / Besides that…</div>
+        <div class="phrase-item">That's why I think…</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="vocab-section" id="vocabSection">
+    <div class="sec-label"><span class="sec-num">3</span> Key vocabulary</div>
+    <div class="vocab-grid" id="vocabGrid"></div>
+  </section>
+
+  <section class="timer-section" id="timerSection">
+    <div class="sec-label"><span class="sec-num">4</span> Speaking timer</div>
+    <div class="timer-card">
+      <div class="ring-wrap">
+        <svg class="timer-svg" viewBox="0 0 160 160">
+          <circle class="timer-bg-c" cx="80" cy="80" r="70"/>
+          <circle class="timer-arc" id="timerArc" cx="80" cy="80" r="70"/>
+        </svg>
+        <div class="ring-inner">
+          <div class="t-time" id="tTime">0:00</div>
+          <div class="t-sub" id="tSub">ready</div>
+        </div>
+      </div>
+      <div class="timer-btns">
+        <button class="tbtn pri" id="startBtn" onclick="startTimer()">▶ Start</button>
+        <button class="tbtn sec" id="pauseBtn" onclick="pauseTimer()" style="display:none">⏸ Pause</button>
+        <button class="tbtn sec" onclick="resetTimer()">↺ Reset</button>
+      </div>
+      <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+    </div>
+    <div class="done-card" id="doneCard">
+      <span class="done-icon">🌸</span>
+      <h3>Time's up!</h3>
+      <p>Well done! Keep practicing to build your fluency and confidence in speaking about environmental topics.</p>
+      <button class="again-btn" onclick="tryAgain()">↺ Try another topic</button>
+    </div>
+  </section>
+</div>
+
+<script>
+const TOPICS = [
+  {
+    text: "Do you think using plastic bags should be banned? Share your opinion and give reasons why you agree or disagree.",
+    tag: "Plastic Bags",
+    prompt: "💬 Try to use: 'I think...', 'In my opinion...', 'I agree/disagree because...'",
+    vocab: [
+      { word: "Ban", def: "To officially stop people from using or doing something." },
+      { word: "Reusable", def: "Something that can be used many times instead of being thrown away." },
+      { word: "Litter", def: "Trash left in public places, like plastic bags on the street." },
+      { word: "Harmful", def: "Something that can cause damage or hurt living things." },
+      { word: "Alternative", def: "A different choice you can use instead of something." },
+      { word: "Environment", def: "The natural world around us — air, water, land, and living things." },
+    ]
+  },
+  {
+    text: "Some people say we should stop using cars and ride bikes instead to reduce pollution. Do you agree? Why or why not?",
+    tag: "Transport & Pollution",
+    prompt: "💬 Try to use: 'I agree with this idea because...', 'On the other hand...', 'I think it depends on...'",
+    vocab: [
+      { word: "Pollution", def: "Dirty or harmful substances in the air, water, or land." },
+      { word: "Exhaust fumes", def: "The gas that comes out of a car's engine." },
+      { word: "Eco-friendly", def: "Good for the environment and not harmful to nature." },
+      { word: "Public transport", def: "Buses, trains, and other vehicles used by everyone." },
+      { word: "Reduce", def: "To make something smaller or less in amount." },
+      { word: "Convenient", def: "Easy to use or do; saves time and effort." },
+    ]
+  },
+  {
+    text: "In your opinion, is it the government's job or each person's job to protect the environment? Give your reasons.",
+    tag: "Responsibility",
+    prompt: "💬 Try to use: 'I believe...', 'I strongly feel that...', 'Both sides have a point, but...'",
+    vocab: [
+      { word: "Responsible", def: "Having a duty to take care of something." },
+      { word: "Individual", def: "A single person, not a group or government." },
+      { word: "Policy", def: "A set of rules made by the government." },
+      { word: "Awareness", def: "Knowing about and understanding something important." },
+      { word: "Action", def: "Something you do to make a change." },
+      { word: "Effort", def: "Trying hard to do something." },
+    ]
+  },
+  {
+    text: "Do you think throwing trash in rivers or oceans should have a bigger punishment? Share your view.",
+    tag: "Water Pollution",
+    prompt: "💬 Try to use: 'I strongly agree...', 'I'm not sure I agree because...', 'The reason I think this is...'",
+    vocab: [
+      { word: "Throw away", def: "To put something in the trash or get rid of it." },
+      { word: "Punishment", def: "A penalty given to someone who breaks a rule." },
+      { word: "Pollute", def: "To make the water, air, or land dirty and harmful." },
+      { word: "Marine life", def: "Animals and plants that live in the sea." },
+      { word: "Fine", def: "Money you pay as a penalty for doing something wrong." },
+      { word: "Strict", def: "Having rules that must be followed very carefully." },
+    ]
+  },
+  {
+    text: "Some schools now teach students about environmental problems. Do you think this is important? Why?",
+    tag: "Environment & Education",
+    prompt: "💬 Try to use: 'I totally agree because...', 'From my experience...', 'I think young people should...'",
+    vocab: [
+      { word: "Educate", def: "To teach someone about a subject." },
+      { word: "Awareness", def: "Understanding that something important exists." },
+      { word: "Future generation", def: "People who will be born and live after us." },
+      { word: "Habit", def: "Something you do regularly without thinking much." },
+      { word: "Recycle", def: "To turn old materials into something new." },
+      { word: "Impact", def: "The effect that something has on a situation." },
+    ]
+  },
+  {
+    text: "Do you think cutting down trees to build more houses is okay if it helps people? Give your opinion.",
+    tag: "Trees & Development",
+    prompt: "💬 Try to use: 'In my opinion...', 'I disagree because...', 'I think there should be a balance between...'",
+    vocab: [
+      { word: "Cut down", def: "To remove a tree by chopping it at the base." },
+      { word: "Development", def: "Building new things like houses, roads, or factories." },
+      { word: "Balance", def: "Having an equal amount of two things." },
+      { word: "Oxygen", def: "The gas in the air that humans and animals need to breathe." },
+      { word: "Wildlife", def: "Animals and plants that live in nature." },
+      { word: "Protect", def: "To keep something safe from harm." },
+    ]
+  },
+  {
+    text: "Many people leave the lights and AC on all day. Do you think this is a big problem? What should be done?",
+    tag: "Energy Use",
+    prompt: "💬 Try to use: 'I think this is a problem because...', 'I agree that we should...', 'A simple solution would be...'",
+    vocab: [
+      { word: "Energy", def: "The power we use to run lights, machines, and appliances." },
+      { word: "Waste", def: "To use more of something than you need." },
+      { word: "Save", def: "To keep something instead of using it all." },
+      { word: "Electricity", def: "The power that runs our lights, TV, and other devices." },
+      { word: "Habit", def: "Something you do often, almost automatically." },
+      { word: "Affect", def: "To have an effect or make a change to something." },
+    ]
+  },
+  {
+    text: "Would you change your daily habits to help the environment — like bringing your own bag or bottle? Why or why not?",
+    tag: "Daily Habits",
+    prompt: "💬 Try to use: 'Personally, I...', 'I agree that small things matter because...', 'I think it's hard to change because...'",
+    vocab: [
+      { word: "Habit", def: "A regular thing you do, often without thinking." },
+      { word: "Reduce", def: "To make something less, like using less plastic." },
+      { word: "Bring your own", def: "To carry your own bag, bottle, or container." },
+      { word: "Lifestyle", def: "The way a person lives and the choices they make." },
+      { word: "Effort", def: "The energy and work you put into doing something." },
+      { word: "Contribute", def: "To give or do something to help a cause." },
+    ]
+  },
+];
+
+let selDur = 1, curTopic = null, interval = null, secsLeft = 60, totalSecs = 60, running = false;
+const CIRC = 2 * Math.PI * 70;
+
+function pickDur(mins, btn) {
+  selDur = mins;
+  document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  totalSecs = mins * 60; secsLeft = totalSecs; refreshDisplay();
+}
+
+function newTopic() {
+  resetTimer();
+  const t = TOPICS[Math.floor(Math.random() * TOPICS.length)];
+  curTopic = t;
+  document.getElementById('topicHint').style.display = 'none';
+  const pill = document.getElementById('topicPill');
+  pill.style.display = 'inline-flex'; pill.textContent = t.tag;
+  const q = document.getElementById('topicQ');
+  q.style.display = 'block'; q.textContent = t.text;
+  q.style.animation = 'none'; requestAnimationFrame(() => q.style.animation = '');
+  document.getElementById('topicCard').classList.add('revealed');
+  const prompt = document.getElementById('topicPrompt');
+  prompt.style.display = 'block'; prompt.textContent = t.prompt;
+  renderVocab(t.vocab);
+  document.getElementById('phrasesSection').style.display = 'block';
+  document.getElementById('vocabSection').style.display = 'block';
+  document.getElementById('timerSection').style.display = 'block';
+  document.getElementById('doneCard').style.display = 'none';
+}
+
+function renderVocab(list) {
+  const g = document.getElementById('vocabGrid'); g.innerHTML = '';
+  list.forEach(({ word, def }) => {
+    const d = document.createElement('div'); d.className = 'vocab-item';
+    d.innerHTML = `<div class="vocab-word">${word}</div><div class="vocab-def">${def}</div>`;
+    g.appendChild(d);
+  });
+}
+
+function fmt(s) { return `${Math.floor(s/60)}:${(s%60).toString().padStart(2,'0')}`; }
+
+function refreshDisplay() {
+  const el = document.getElementById('tTime');
+  const sub = document.getElementById('tSub');
+  const fill = document.getElementById('progFill');
+  const arc = document.getElementById('timerArc');
+  el.textContent = fmt(secsLeft);
+  fill.style.width = ((1 - secsLeft/totalSecs)*100) + '%';
+  arc.style.strokeDashoffset = CIRC - (CIRC * secsLeft / totalSecs);
+  el.className = 't-time';
+  const r = secsLeft / totalSecs;
+  if (r <= 0.15) { el.classList.add('danger'); arc.style.stroke = 'var(--red-danger)'; }
+  else if (r <= 0.3) { el.classList.add('warn'); arc.style.stroke = 'var(--amber-warn)'; }
+  else { arc.style.stroke = 'var(--sage)'; }
+  sub.textContent = running ? `${totalSecs - secsLeft}s elapsed` : (secsLeft === totalSecs ? 'ready' : 'paused');
+}
+
+function startTimer() {
+  if (!curTopic) { alert('Please generate a topic first!'); return; }
+  if (secsLeft === 0) { resetTimer(); return; }
+  running = true;
+  document.getElementById('startBtn').style.display = 'none';
+  document.getElementById('pauseBtn').style.display = 'inline-block';
+  interval = setInterval(() => {
+    secsLeft--; refreshDisplay();
+    if (secsLeft <= 0) {
+      clearInterval(interval); running = false;
+      document.getElementById('tSub').textContent = 'done!';
+      document.getElementById('startBtn').style.display = 'inline-block';
+      document.getElementById('pauseBtn').style.display = 'none';
+      const dc = document.getElementById('doneCard');
+      dc.style.display = 'block'; dc.style.animation = 'none';
+      requestAnimationFrame(() => dc.style.animation = '');
+    }
+  }, 1000);
+}
+
+function pauseTimer() {
+  clearInterval(interval); running = false;
+  document.getElementById('startBtn').style.display = 'inline-block';
+  document.getElementById('pauseBtn').style.display = 'none';
+  refreshDisplay();
+}
+
+function resetTimer() {
+  clearInterval(interval); running = false;
+  secsLeft = selDur * 60; totalSecs = secsLeft;
+  document.getElementById('startBtn').style.display = 'inline-block';
+  document.getElementById('pauseBtn').style.display = 'none';
+  refreshDisplay();
+}
+
+function tryAgain() { resetTimer(); newTopic(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+refreshDisplay();
+</script>
+</body>
+</html>
